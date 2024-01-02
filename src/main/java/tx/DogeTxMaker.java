@@ -54,7 +54,8 @@ public class DogeTxMaker {
         txOutputs.add(txOutput);
 
         EstimateFee.ResultSmart fee = new EstimateFee().estimatesmartfee(3, url, username, password);
-        String signedTx = createTransactionSignDoge(txInputList, txOutputs, "freecash.org", addr,fee.getFeerate());
+        String opReturn = null;//"freecash.org";
+        String signedTx = createTransactionSignDoge(txInputList, txOutputs, opReturn, addr,fee.getFeerate());
         System.out.println(signedTx);
         String txid = "2787f21df6657be6fd216b8919b26ad726227bcd65c0cd76b1252aa66dfb8cb6";
         System.out.println(getFirstSenderDoge(txid,url,username,password));
@@ -62,10 +63,10 @@ public class DogeTxMaker {
 
     public static String createTransactionSignDoge(List<TxInput> inputs, List<TxOutput> outputs, String opReturn, String returnAddr, double feeRateDouble) {
 
-        long size = calcFee(inputs.size(),outputs.size(),opReturn.getBytes().length);
+        long txSize = opReturn==null? calcTxSize(inputs.size(),outputs.size(),0): calcTxSize(inputs.size(),outputs.size(),opReturn.getBytes().length);
         long fee;
         if(feeRateDouble!=0){
-            fee = (long)((feeRateDouble/1000)*TO_SATOSHI*size);
+            fee = (long)((feeRateDouble/1000)*TO_SATOSHI*txSize);
         }else fee =(long) (0.1*TO_SATOSHI);
 
         NetworkParameters networkParameters = DogecoinMainNetParams.get();;
@@ -176,7 +177,7 @@ public class DogeTxMaker {
         return Base58.encode(addrRaw);
     }
 
-    public static long calcFee(int inputNum, int outputNum, int opReturnBytesLen) {
+    public static long calcTxSize(int inputNum, int outputNum, int opReturnBytesLen) {
         long priceInSatoshi = 1;
         long baseLength = 10;
         long inputLength = 148 * (long) inputNum;
