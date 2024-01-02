@@ -435,7 +435,7 @@ public class AuxPoW extends ChildMessage {
     }
 
     /**
-     * Test whether one array is at a specific offset within the other.
+     * tx.Test whether one array is at a specific offset within the other.
      * 
      * @param script the longer array to test for containing another array.
      * @param offset the offset to start at within the larger array.

@@ -1,3 +1,5 @@
+package tx;
+
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.params.MainNetParams;
