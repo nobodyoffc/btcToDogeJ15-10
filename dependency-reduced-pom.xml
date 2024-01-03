@@ -43,6 +43,10 @@
                   <pattern>org.bitcoinj</pattern>
                   <shadedPattern>shade.bitcoinj159</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>org.bouncycastle</pattern>
+                  <shadedPattern>shade.bouncycastle163</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>

@@ -103,7 +103,8 @@ public class DogeTxMaker {
         for (TxInputDoge input : inputs) {
             totalMoney += input.getAmount();
 
-            ECKey eckey = ECKey.fromPrivate(input.getPriKey32());
+            byte[] priKey32 = input.getPriKey32();
+            ECKey eckey = ECKey.fromPrivate(priKey32);
 
             ecKeys.add(eckey);
             UTXO utxo = new UTXO(Sha256Hash.wrap(input.getTxId()), input.getIndex(), Coin.valueOf(input.getAmount()), 0, false, ScriptBuilder.createP2PKHOutputScript(eckey));
