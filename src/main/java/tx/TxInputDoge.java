@@ -1,6 +1,6 @@
 package tx;
 
-public class TxInput {
+public class TxInputDoge {
 
     private byte[] priKey32;
 

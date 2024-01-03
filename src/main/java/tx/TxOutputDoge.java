@@ -1,6 +1,6 @@
 package tx;
 
-public class TxOutput {
+public class TxOutputDoge {
 
     private String address;
 

@@ -28,7 +28,7 @@ public class ListUnspent {
         return getUtxos(result);
     }
 
-    public Utxo[] listUnspent(@Nullable String addr, @Nullable String minConf, boolean includeUnsafe,String url, String username, String password){
+    public Utxo[] listUnspent(@Nullable String addr, @Nullable String minConf, boolean includeUnsafe, String url, String username, String password){
         ListUnspentParams listUnspentParams = new ListUnspentParams(minConf,new String[]{addr},includeUnsafe);
         RpcRequest jsonRPC2Request = new RpcRequest(method, listUnspentParams.toParams());
         Object result = RpcRequest.requestRpc(url, username,password,"listUnspent",jsonRPC2Request);

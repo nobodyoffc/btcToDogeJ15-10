@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-package params;
+package org.libdohj.params;
 
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.StoredBlock;
 import org.bitcoinj.core.VerificationException;
 import org.bitcoinj.store.BlockStore;
 import org.bitcoinj.store.BlockStoreException;
-import org.libdohj.params.LitecoinTestNet3Params;
+
 
 import java.math.BigInteger;
 
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Network parameters for the regression test mode of bitcoind in which all blocks are trivially solvable.
+ * Network parameters for the regression test mode of dogecoin in which all blocks are trivially solvable.
  */
-public class LitecoinRegTestParams extends LitecoinTestNet3Params {
+public class DogecoinRegTestParams extends DogecoinTestNet3Params {
     private static final BigInteger MAX_TARGET = new BigInteger("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16);
 
-    public LitecoinRegTestParams() {
+    public DogecoinRegTestParams() {
         super();
         // Difficulty adjustments are disabled for regtest.
         // By setting the block interval for difficulty adjustments to Integer.MAX_VALUE we make sure difficulty never changes.
         interval = Integer.MAX_VALUE;
         maxTarget = MAX_TARGET;
         subsidyDecreaseBlockCount = 150;
-        port = 19444;
-        id = ID_LITE_REGTEST;
+        port = 18444;
+        id = AbstractDogecoinParams.ID_DOGE_REGTEST;
         packetMagic = 0xfabfb5da;
+        addressHeader = 111;
+        dumpedPrivateKeyHeader = 239;
     }
 
     @Override
@@ -52,40 +54,34 @@ public class LitecoinRegTestParams extends LitecoinTestNet3Params {
 
     private static Block genesis;
 
-
-    /**
-     * Extract from Litecoin source code, definition of regtest params.
-     * https://github.com/litecoin-project/litecoin/blob/edc66b374ea68107c721062152dd95e6aa037d53/src/chainparams.cpp
-     */
     @Override
     public Block getGenesisBlock() {
-        synchronized (LitecoinRegTestParams.class) {
+        synchronized (DogecoinRegTestParams.class) {
             if (genesis == null) {
                 genesis = super.getGenesisBlock();
-                genesis.setNonce(0);
+                genesis.setNonce(2);
                 genesis.setDifficultyTarget(0x207fffffL);
                 genesis.setTime(1296688602L);
                 checkState(genesis.getVersion() == 1);
-                checkState(genesis.getMerkleRoot().toString().equals("97ddfbbae6be97fd6cdf3e7ca13232a3afff2353e29badfab7f73011edd4ced9"));
-                checkState(genesis.getHashAsString().toLowerCase().equals("530827f38f93b43ed12af0b3ad25a288dc02ed74d6d7857862df51fc56c416f9"));
+                checkState(genesis.getHashAsString().toLowerCase().equals("3d2160a3b5dc4a9d62e7e66a295f70313ac808440ef7400d6c0772171ce973a5"));
                 genesis.verifyHeader();
             }
             return genesis;
         }
     }
 
-    private static LitecoinRegTestParams instance;
+    private static DogecoinRegTestParams instance;
 
-    public static synchronized LitecoinRegTestParams get() {
+    public static synchronized DogecoinRegTestParams get() {
         if (instance == null) {
-            instance = new LitecoinRegTestParams();
+            instance = new DogecoinRegTestParams();
         }
         return instance;
     }
 
     @Override
     public String getPaymentProtocolId() {
-        return ID_LITE_REGTEST;
+        return AbstractDogecoinParams.ID_DOGE_REGTEST;
     }
 
     @Override
@@ -94,5 +90,15 @@ public class LitecoinRegTestParams extends LitecoinTestNet3Params {
             throws VerificationException, BlockStoreException {
         final Block prev = storedPrev.getHeader();
         return prev.getDifficultyTarget();
+    }
+
+    @Override
+    public boolean allowMinDifficultyBlocks() {
+        return false;
+    }
+
+    @Override
+    public boolean isTestNet() {
+        return false;
     }
 }

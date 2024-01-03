@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package params;
+package org.libdohj.params;
 
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
+
 
 import static com.google.common.base.Preconditions.checkState;
 

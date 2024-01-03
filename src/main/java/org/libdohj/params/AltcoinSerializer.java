@@ -1,4 +1,4 @@
-package params;
+package org.libdohj.params;
 
 import org.bitcoinj.core.*;
 

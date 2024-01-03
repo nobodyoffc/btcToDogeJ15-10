@@ -4,7 +4,7 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.Script;
-import params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinMainNetParams;
 
 public class Test {
     public static void main(String[] args) {

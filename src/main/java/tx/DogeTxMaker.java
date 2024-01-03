@@ -5,7 +5,7 @@ import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
-import params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinMainNetParams;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,9 +33,9 @@ public class DogeTxMaker {
             return;
         }
 
-        List<TxInput> txInputList = new ArrayList<>();
+        List<TxInputDoge> txInputList = new ArrayList<>();
         for(Utxo utxo1:utxos) {
-            TxInput txInput = new TxInput();
+            TxInputDoge txInput = new TxInputDoge();
             txInput.setTxId(utxo1.getTxid());
             txInput.setAmount((long) (utxo1.getAmount() * 100000000));
             txInput.setIndex(utxo1.getVout());
@@ -47,10 +47,10 @@ public class DogeTxMaker {
             txInput.setPriKey32(ecKey.getPrivKeyBytes());
             txInputList.add(txInput);
         }
-        TxOutput txOutput = new TxOutput();
+        TxOutputDoge txOutput = new TxOutputDoge();
         txOutput.setAddress(addr);
         txOutput.setAmount(10000000);
-        List<TxOutput> txOutputs = new ArrayList<>();
+        List<TxOutputDoge> txOutputs = new ArrayList<>();
         txOutputs.add(txOutput);
 
         EstimateFee.ResultSmart fee = new EstimateFee().estimatesmartfee(3, url, username, password);
@@ -61,7 +61,7 @@ public class DogeTxMaker {
         System.out.println(getFirstSenderDoge(txid,url,username,password));
     }
 
-    public static String createTransactionSignDoge(List<TxInput> inputs, List<TxOutput> outputs, String opReturn, String returnAddr, double feeRateDouble) {
+    public static String createTransactionSignDoge(List<TxInputDoge> inputs, List<TxOutputDoge> outputs, String opReturn, String returnAddr, double feeRateDouble) {
 
         long txSize = opReturn==null? calcTxSize(inputs.size(),outputs.size(),0): calcTxSize(inputs.size(),outputs.size(),opReturn.getBytes().length);
         long fee;
@@ -69,14 +69,14 @@ public class DogeTxMaker {
             fee = (long)((feeRateDouble/1000)*TO_SATOSHI*txSize);
         }else fee =(long) (0.1*TO_SATOSHI);
 
-        NetworkParameters networkParameters = DogecoinMainNetParams.get();;
+        NetworkParameters networkParameters = DogecoinMainNetParams.get();
         Transaction transaction = new Transaction(networkParameters);
 
         long totalMoney = 0;
         long totalOutput = 0;
 
         List<ECKey> ecKeys = new ArrayList<>();
-        for (TxOutput output : outputs) {
+        for (TxOutputDoge output : outputs) {
             totalOutput += output.getAmount();
 
             transaction.addOutput(Coin.valueOf(output.getAmount()), Address.fromString(networkParameters, output.getAddress()));
@@ -100,7 +100,7 @@ public class DogeTxMaker {
             }
         }
 
-        for (TxInput input : inputs) {
+        for (TxInputDoge input : inputs) {
             totalMoney += input.getAmount();
 
             ECKey eckey = ECKey.fromPrivate(input.getPriKey32());

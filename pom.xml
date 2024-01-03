@@ -28,12 +28,7 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
-<!--                <exclusion>-->
-<!--                    <groupId>org.bouncycastle</groupId>-->
-<!--                    <artifactId>bcprov-jdk15to18</artifactId>-->
-<!--                </exclusion>-->
             </exclusions>
-
         </dependency>
 
         <!-- implementation in Gradle translates to compile scope in Maven -->
@@ -46,7 +41,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.0-android</version>
+            <version>31.0.1-jre</version> <!-- use the latest version -->
         </dependency>
 
         <dependency>
@@ -96,22 +91,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.fusesource.leveldbjni</groupId>
-            <artifactId>leveldbjni-all</artifactId>
-            <version>1.8</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.0.1-jre</version> <!-- use the latest version -->
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

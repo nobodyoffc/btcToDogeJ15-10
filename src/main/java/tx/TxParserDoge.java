@@ -5,7 +5,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.script.Script;
-import params.DogecoinMainNetParams;
+import org.libdohj.params.DogecoinMainNetParams;
 
 
 import java.util.Arrays;
