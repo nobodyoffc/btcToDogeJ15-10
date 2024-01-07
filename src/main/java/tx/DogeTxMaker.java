@@ -62,6 +62,9 @@ public class DogeTxMaker {
     }
 
     public static String createTransactionSignDoge(List<TxInputDoge> inputs, List<TxOutputDoge> outputs, String opReturn, String returnAddr, double feeRateDouble) {
+        return createTransactionSignSegWit(DogecoinMainNetParams.get(),inputs,outputs,opReturn,returnAddr,feeRateDouble);
+    }
+    public static String createTransactionSignSegWit(NetworkParameters networkParameters,List<TxInputDoge> inputs, List<TxOutputDoge> outputs, String opReturn, String returnAddr, double feeRateDouble) {
 
         long txSize = opReturn==null? calcTxSize(inputs.size(),outputs.size(),0): calcTxSize(inputs.size(),outputs.size(),opReturn.getBytes().length);
         long fee;
@@ -69,7 +72,6 @@ public class DogeTxMaker {
             fee = (long)((feeRateDouble/1000)*TO_SATOSHI*txSize);
         }else fee =(long) (0.1*TO_SATOSHI);
 
-        NetworkParameters networkParameters = DogecoinMainNetParams.get();
         Transaction transaction = new Transaction(networkParameters);
 
         long totalMoney = 0;
