@@ -54,7 +54,7 @@ public class DogeTxMaker {
         txOutputs.add(txOutput);
 
         EstimateFee.ResultSmart fee = new EstimateFee().estimatesmartfee(3, url, username, password);
-        String opReturn = null;//"freecash.org";
+        String opReturn = "a";
         String signedTx = createTransactionSignDoge(txInputList, txOutputs, opReturn, addr,fee.getFeerate());
         System.out.println(signedTx);
         String txid = "2787f21df6657be6fd216b8919b26ad726227bcd65c0cd76b1252aa66dfb8cb6";
@@ -66,7 +66,15 @@ public class DogeTxMaker {
     }
     public static String createTransactionSignSegWit(NetworkParameters networkParameters,List<TxInputDoge> inputs, List<TxOutputDoge> outputs, String opReturn, String returnAddr, double feeRateDouble) {
 
-        long txSize = opReturn==null? calcTxSize(inputs.size(),outputs.size(),0): calcTxSize(inputs.size(),outputs.size(),opReturn.getBytes().length);
+        long txSize;
+        byte[] opReturnBytes = new byte[0];
+        if (opReturn == null) {
+            txSize = calcTxSize(inputs.size(),outputs.size(),0);
+        } else {
+            opReturnBytes = opReturn.getBytes();
+            int opReturnBytesLen = opReturnBytes.length;
+            txSize = calcTxSize(inputs.size(),outputs.size(), opReturnBytesLen);
+        }
         long fee;
         if(feeRateDouble!=0){
             fee = (long)((feeRateDouble/1000)*TO_SATOSHI*txSize);
@@ -86,16 +94,7 @@ public class DogeTxMaker {
 
         if (opReturn != null && !"".equals(opReturn)) {
             try {
-                // Assuming opReturn is a String containing your data
-                byte[] data = opReturn.getBytes();
-
-                // Convert data to hexadecimal format
-                String hexData = HexFormat.of().formatHex(data);
-
-                // Convert the hexadecimal string back to a byte array
-                byte[] hexAsBytes = HexFormat.of().parseHex(hexData);
-
-                Script opreturnScript = ScriptBuilder.createOpReturnScript(hexAsBytes);
+                Script opreturnScript = ScriptBuilder.createOpReturnScript(opReturnBytes);
                 transaction.addOutput(Coin.ZERO,opreturnScript);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -181,19 +180,30 @@ public class DogeTxMaker {
     }
 
     public static long calcTxSize(int inputNum, int outputNum, int opReturnBytesLen) {
-        long priceInSatoshi = 1;
+
         long baseLength = 10;
         long inputLength = 148 * (long) inputNum;
         long outputLength = 34 * (long) (outputNum + 1); // Include change output
 
-        long opReturnLength = 0;
-        if (opReturnBytesLen > 0) {
-            opReturnLength = 1+opReturnBytesLen+VarInt.sizeOf(opReturnBytesLen)+VarInt.sizeOf((opReturnBytesLen)+VarInt.sizeOf(opReturnBytesLen)+1)+8;//8+1 + VarInt.sizeOf(opReturnBytesLen*2L) + opReturnBytesLen*2L;
-        }
-        long totalLength = baseLength + inputLength + outputLength + opReturnLength;
-        return priceInSatoshi * totalLength;
+        int opReturnLen=0;
+        if (opReturnBytesLen!=0)
+            opReturnLen = calcOpReturnLen(opReturnBytesLen);
+
+        return baseLength + inputLength + outputLength + opReturnLen;
     }
 
+    private static int calcOpReturnLen(int opReturnBytesLen) {
+        int dataLen;
+        if(opReturnBytesLen <76){
+            dataLen = opReturnBytesLen +1;
+        }else if(opReturnBytesLen <256){
+            dataLen = opReturnBytesLen +2;
+        }else dataLen = opReturnBytesLen +3;
+        int scriptLen;
+        scriptLen = (dataLen + 1) + VarInt.sizeOf(dataLen+1);
+        int amountLen = 8;
+        return scriptLen + amountLen;
+    }
 
     public static byte[] getPriKey32(String priKey) {
         byte[] priKey32Bytes;
